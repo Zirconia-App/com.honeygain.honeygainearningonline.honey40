@@ -180,6 +180,7 @@ public class honeygaincase40_MainActivity extends AppCompatActivity {
 
         List< View > clickableViews = new ArrayList<>();
         clickableViews.add(L1);
+        clickableViews.add(nativeAdCallToAction);
         nativeAd.registerViewForInteraction(adView, nativeAdMedia, nativeAdIcon, clickableViews);
 
         NativeAdBase.NativeComponentTag.tagView(nativeAdIcon, NativeAdBase.NativeComponentTag.AD_ICON);
