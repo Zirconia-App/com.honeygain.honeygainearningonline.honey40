@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
@@ -19,6 +20,8 @@ import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.InterstitialAd;
 import com.facebook.ads.InterstitialAdListener;
+import com.facebook.ads.NativeAdListener;
+import com.facebook.ads.NativeBannerAd;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,9 +33,10 @@ import java.net.URL;
 
 public class honeygaincase40_SplashActivity extends AppCompatActivity {
 
+    FrameLayout nativeBannerContainer;
     public String Splash = String.valueOf(getClass());
     public String TAG = String.valueOf(getClass());
-
+    public static NativeBannerAd nativeBannerAd, nativeBannerAd1;
     public static InterstitialAd interstitialAd1;
 
     private boolean Online() {
@@ -45,13 +49,48 @@ public class honeygaincase40_SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.honeygaincase40_splash);
 
-
+        loadNativeBanner();
         datafromlink();
         loadFullscreenad();
         NextScreen();
 
     }
+    public void loadNativeBanner() {
+        nativeBannerAd = new NativeBannerAd(this, getString(R.string.fbnativeban));
+        Log.e(TAG, "fbnativebanner16 " + getString(R.string.fbnativeban));
+        NativeAdListener nativeAdListener = new NativeAdListener() {
+            @Override
+            public void onMediaDownloaded(Ad ad) {
 
+            }
+
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Log.e(Splash, "fbnativebanner 16 " + adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Log.e(Splash, "Native ad is loaded and ready to be displayed!");
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+
+            }
+        };
+        nativeBannerAd.loadAd(
+                nativeBannerAd.buildLoadAdConfig()
+                        .withAdListener(nativeAdListener)
+                        .build());
+
+
+    }
     void datafromlink() {
         new AsyncTask< Void, Void, String >() {
             @Override

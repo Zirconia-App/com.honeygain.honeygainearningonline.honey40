@@ -27,6 +27,8 @@ import com.facebook.ads.MediaViewListener;
 import com.facebook.ads.NativeAd;
 import com.facebook.ads.NativeAdBase;
 import com.facebook.ads.NativeAdListener;
+import com.facebook.ads.NativeBannerAd;
+import com.facebook.ads.NativeBannerAdView;
 
 
 import java.util.ArrayList;
@@ -34,7 +36,8 @@ import java.util.List;
 
 public class honeygaincase40_MainActivity extends AppCompatActivity {
     Button btnStart, btnShare, btnRate, btnPrivacy;
-
+    NativeBannerAd nativeBannerAd;
+    FrameLayout nativeBannerContainer;
     TextView imageButton, share, more, rate;
     ImageView Q_1, Q_2;
 
@@ -57,7 +60,7 @@ public class honeygaincase40_MainActivity extends AppCompatActivity {
 
 
         loadfbNativeAd();
-        showfbbanner();
+       showfbNativeBanner();
         ShowFullAds();
 
         honeygaincase40_SplashActivity.url_passing(honeygaincase40_MainActivity.this);
@@ -176,9 +179,7 @@ public class honeygaincase40_MainActivity extends AppCompatActivity {
         sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
 
         List< View > clickableViews = new ArrayList<>();
-        clickableViews.add(nativeAdIcon);
-        clickableViews.add(nativeAdMedia);
-        clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(L1);
         nativeAd.registerViewForInteraction(adView, nativeAdMedia, nativeAdIcon, clickableViews);
 
         NativeAdBase.NativeComponentTag.tagView(nativeAdIcon, NativeAdBase.NativeComponentTag.AD_ICON);
@@ -243,40 +244,45 @@ public class honeygaincase40_MainActivity extends AppCompatActivity {
 
     }
 
-    private void showfbbanner() {
-        Log.e(TAG, "fbban4 " + getString(R.string.fbbanner));
-        FrameLayout adViewContainer = findViewById(R.id.fl_b);
-        bannerAdContainer = new com.facebook.ads.AdView(this, getString(R.string.fbbanner), com.facebook.ads.AdSize.BANNER_HEIGHT_90);
-        adViewContainer.addView(bannerAdContainer);
+    public void showfbNativeBanner() {
+        View adView = NativeBannerAdView.render(this, honeygaincase40_SplashActivity.nativeBannerAd, NativeBannerAdView.Type.HEIGHT_100);
+        nativeBannerContainer = (FrameLayout) findViewById(R.id.fl_b);
+        // Add the Native Banner Ad View to your ad container
+        nativeBannerContainer.addView(adView);
+
+        nativeBannerAd = new NativeBannerAd(this, getString(R.string.fbnativeban));
+        Log.e(TAG, "fbnativebanner1 " + getString(R.string.fbnativeban));
         NativeAdListener nativeAdListener = new NativeAdListener() {
             @Override
             public void onMediaDownloaded(Ad ad) {
+
             }
 
             @Override
             public void onError(Ad ad, AdError adError) {
-                Log.e("fbban4==>", adError.getErrorMessage());
+                Log.e(TAG, "fbnativebanner 1 " + adError.getErrorMessage());
 
             }
 
             @Override
             public void onAdLoaded(Ad ad) {
-                Log.e("fbban4==>", "onAdLoaded: ");
+                Log.e(TAG, "Native ad is loaded and ready to be displayed!");
+                View adView = NativeBannerAdView.render(getApplicationContext(), nativeBannerAd, NativeBannerAdView.Type.HEIGHT_100);
+                nativeBannerContainer.addView(adView);
             }
 
             @Override
             public void onAdClicked(Ad ad) {
-                Log.e("fbban4==>", "onAdClicked: ");
+
             }
 
             @Override
             public void onLoggingImpression(Ad ad) {
-                Log.e("fbban4==>", "onLoggingImpression: ");
+
             }
         };
-
-        bannerAdContainer.loadAd(
-                bannerAdContainer.buildLoadAdConfig()
+        nativeBannerAd.loadAd(
+                nativeBannerAd.buildLoadAdConfig()
                         .withAdListener(nativeAdListener)
                         .build());
     }

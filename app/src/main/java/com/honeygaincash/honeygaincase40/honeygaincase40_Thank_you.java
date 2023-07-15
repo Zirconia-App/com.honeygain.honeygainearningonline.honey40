@@ -16,11 +16,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.InterstitialAd;
+import com.facebook.ads.InterstitialAdListener;
 import com.facebook.ads.MediaView;
 import com.facebook.ads.MediaViewListener;
 import com.facebook.ads.NativeAd;
 import com.facebook.ads.NativeAdBase;
 import com.facebook.ads.NativeAdListener;
+import com.facebook.ads.NativeBannerAd;
+import com.facebook.ads.NativeBannerAdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +38,14 @@ public class honeygaincase40_Thank_you extends AppCompatActivity {
     InterstitialAd interstitialAd;
     ProgressDialog progressDialog;
     public String TAG = String.valueOf(getClass());
+    NativeBannerAd nativeBannerAd;
+    FrameLayout nativeBannerContainer;
 
     public void onBackPressed() {
         super.onBackPressed();
+        ShowFullAds();
+        honeygaincase40_SplashActivity.url_passing(honeygaincase40_Thank_you.this);
+        honeygaincase40_SplashActivity.url_passing1(honeygaincase40_Thank_you.this);
     }
 
     /* access modifiers changed from: protected */
@@ -45,9 +53,9 @@ public class honeygaincase40_Thank_you extends AppCompatActivity {
         super.onCreate(bundle);
         setContentView((int) R.layout.honeygaincase40_thank_you);
 
-
+        ShowFullAds();
         loadfbNativeAd();
-        showfbbanner();
+        showfbNativeBanner();
 
         getWindow().setFlags(1024, 1024);
         getWindow().setFlags(1024, 1024);
@@ -121,9 +129,7 @@ public class honeygaincase40_Thank_you extends AppCompatActivity {
         sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
 
         List< View > clickableViews = new ArrayList<>();
-        clickableViews.add(nativeAdIcon);
-        clickableViews.add(nativeAdMedia);
-        clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(L1);
         nativeAd.registerViewForInteraction(adView, nativeAdMedia, nativeAdIcon, clickableViews);
 
         NativeAdBase.NativeComponentTag.tagView(nativeAdIcon, NativeAdBase.NativeComponentTag.AD_ICON);
@@ -185,40 +191,109 @@ public class honeygaincase40_Thank_you extends AppCompatActivity {
 
     }
 
-    private void showfbbanner() {
-        Log.e(TAG, "fbban5 " + getString(R.string.fbbanner));
-        FrameLayout adViewContainer = findViewById(R.id.fl_b);
-        bannerAdContainer = new com.facebook.ads.AdView(this, getString(R.string.fbbanner), com.facebook.ads.AdSize.BANNER_HEIGHT_90);
-        adViewContainer.addView(bannerAdContainer);
+    public void showfbNativeBanner() {
+        View adView = NativeBannerAdView.render(this, honeygaincase40_SplashActivity.nativeBannerAd, NativeBannerAdView.Type.HEIGHT_100);
+        nativeBannerContainer = (FrameLayout) findViewById(R.id.fl_b);
+        // Add the Native Banner Ad View to your ad container
+        nativeBannerContainer.addView(adView);
+
+        nativeBannerAd = new NativeBannerAd(this, getString(R.string.fbnativeban));
+        Log.e(TAG, "fbnativebanner1 " + getString(R.string.fbnativeban));
         NativeAdListener nativeAdListener = new NativeAdListener() {
             @Override
             public void onMediaDownloaded(Ad ad) {
+
             }
 
             @Override
             public void onError(Ad ad, AdError adError) {
-                Log.e("fbban5==>", adError.getErrorMessage());
+                Log.e(TAG, "fbnativebanner 1 " + adError.getErrorMessage());
 
             }
 
             @Override
             public void onAdLoaded(Ad ad) {
-                Log.e("fbban5==>", "onAdLoaded: ");
+                Log.e(TAG, "Native ad is loaded and ready to be displayed!");
+                View adView = NativeBannerAdView.render(getApplicationContext(), nativeBannerAd, NativeBannerAdView.Type.HEIGHT_100);
+                nativeBannerContainer.addView(adView);
             }
 
             @Override
             public void onAdClicked(Ad ad) {
-                Log.e("fbban5==>", "onAdClicked: ");
+
             }
 
             @Override
             public void onLoggingImpression(Ad ad) {
-                Log.e("fbban5==>", "onLoggingImpression: ");
+
             }
         };
-
-        bannerAdContainer.loadAd(bannerAdContainer.buildLoadAdConfig().withAdListener(nativeAdListener).build());
+        nativeBannerAd.loadAd(
+                nativeBannerAd.buildLoadAdConfig()
+                        .withAdListener(nativeAdListener)
+                        .build());
     }
-    /* access modifiers changed from: protected */
 
+    /* access modifiers changed from: protected */
+    public void ShowFullAds() {
+        Log.e(TAG, "fbfull1 " + getString(R.string.fbfull));
+        try {
+            if (honeygaincase40_SplashActivity.interstitialAd1 != null && honeygaincase40_SplashActivity.interstitialAd1.isAdLoaded())
+                honeygaincase40_SplashActivity.interstitialAd1.show();
+            else {
+                if (!honeygaincase40_SplashActivity.interstitialAd1.isAdLoaded())
+                    honeygaincase40_SplashActivity.interstitialAd1.loadAd();
+
+                interstitialAd = new InterstitialAd(this, getString(R.string.fbfull));
+                InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
+
+
+                    @Override
+                    public void onInterstitialDisplayed(Ad ad) {
+
+                    }
+
+                    @Override
+                    public void onInterstitialDismissed(Ad ad) {
+                        // Interstitial dismissed callback
+                        Log.e(TAG, "fbfull1 " + "Interstitial ad dismissed.");
+                    }
+
+                    @Override
+                    public void onError(Ad ad, AdError adError) {
+                        // Ad error callback
+                        Log.e(TAG, "fbfull1" + adError.getErrorMessage());
+
+                    }
+
+                    @Override
+                    public void onAdLoaded(Ad ad) {
+                        Log.d(TAG, "fbfull1 " + "Interstitial ad is loaded and ready to be diSplash_screenlayed!");
+                        if (interstitialAd != null && interstitialAd.isAdLoaded())
+                            interstitialAd.show();
+                    }
+
+                    @Override
+                    public void onAdClicked(Ad ad) {
+                        // Ad clicked callback
+                        Log.d(TAG, "fbfull1 " + "Interstitial ad clicked!");
+                    }
+
+                    @Override
+                    public void onLoggingImpression(Ad ad) {
+                        // Ad impression logged callback
+                        Log.d(TAG, "fbfull1 " + "Interstitial ad impression logged!");
+                    }
+                };
+
+                interstitialAd.loadAd(
+                        interstitialAd.buildLoadAdConfig()
+                                .withAdListener(interstitialAdListener)
+                                .build());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -25,6 +25,8 @@ import com.facebook.ads.MediaViewListener;
 import com.facebook.ads.NativeAd;
 import com.facebook.ads.NativeAdBase;
 import com.facebook.ads.NativeAdListener;
+import com.facebook.ads.NativeBannerAd;
+import com.facebook.ads.NativeBannerAdView;
 
 
 import java.util.ArrayList;
@@ -33,7 +35,8 @@ import java.util.List;
 public class honeygaincase40_Exit extends AppCompatActivity {
     private Button btn_no, Q_1, Q_2;
     private Button exitapp;
-
+    NativeBannerAd nativeBannerAd;
+    FrameLayout nativeBannerContainer;
 
     private com.facebook.ads.AdView bannerAdContainer;
     LinearLayout adView1, L1, L2;
@@ -48,6 +51,10 @@ public class honeygaincase40_Exit extends AppCompatActivity {
 
 
     public void onBackPressed() {
+        super.onBackPressed();
+        ShowFullAds();
+        honeygaincase40_SplashActivity.url_passing(honeygaincase40_Exit.this);
+        honeygaincase40_SplashActivity.url_passing1(honeygaincase40_Exit.this);
 
     }
 
@@ -61,8 +68,8 @@ public class honeygaincase40_Exit extends AppCompatActivity {
 
 
         loadfbNativeAd();
-        showfbbanner();
-        showfbbanner1();
+        showfbNativeBanner();
+
         ShowFullAds();
         honeygaincase40_SplashActivity.url_passing(honeygaincase40_Exit.this);
         honeygaincase40_SplashActivity.url_passing1(honeygaincase40_Exit.this);
@@ -146,9 +153,7 @@ public class honeygaincase40_Exit extends AppCompatActivity {
         sponsoredLabel.setText(nativeAd.getSponsoredTranslation());
 
         List< View > clickableViews = new ArrayList<>();
-        clickableViews.add(nativeAdIcon);
-        clickableViews.add(nativeAdMedia);
-        clickableViews.add(nativeAdCallToAction);
+        clickableViews.add(L1);
         nativeAd.registerViewForInteraction(adView, nativeAdMedia, nativeAdIcon, clickableViews);
 
         NativeAdBase.NativeComponentTag.tagView(nativeAdIcon, NativeAdBase.NativeComponentTag.AD_ICON);
@@ -213,78 +218,45 @@ public class honeygaincase40_Exit extends AppCompatActivity {
 
     }
 
-    private void showfbbanner() {
-        Log.e(TAG, "fbban2 " + getString(R.string.fbbanner));
-        FrameLayout adViewContainer = findViewById(R.id.fl_b);
-        bannerAdContainer = new com.facebook.ads.AdView(this, getString(R.string.fbbanner), com.facebook.ads.AdSize.BANNER_HEIGHT_90);
-        adViewContainer.addView(bannerAdContainer);
+    public void showfbNativeBanner() {
+        View adView = NativeBannerAdView.render(this, honeygaincase40_SplashActivity.nativeBannerAd, NativeBannerAdView.Type.HEIGHT_100);
+        nativeBannerContainer = (FrameLayout) findViewById(R.id.fl_b);
+        // Add the Native Banner Ad View to your ad container
+        nativeBannerContainer.addView(adView);
+
+        nativeBannerAd = new NativeBannerAd(this, getString(R.string.fbnativeban));
+        Log.e(TAG, "fbnativebanner1 " + getString(R.string.fbnativeban));
         NativeAdListener nativeAdListener = new NativeAdListener() {
             @Override
             public void onMediaDownloaded(Ad ad) {
+
             }
 
             @Override
             public void onError(Ad ad, AdError adError) {
-                Log.e("fbban2==>", adError.getErrorMessage());
+                Log.e(TAG, "fbnativebanner 1 " + adError.getErrorMessage());
 
             }
 
             @Override
             public void onAdLoaded(Ad ad) {
-                Log.e("fbban2==>", "onAdLoaded: ");
+                Log.e(TAG, "Native ad is loaded and ready to be displayed!");
+                View adView = NativeBannerAdView.render(getApplicationContext(), nativeBannerAd, NativeBannerAdView.Type.HEIGHT_100);
+                nativeBannerContainer.addView(adView);
             }
 
             @Override
             public void onAdClicked(Ad ad) {
-                Log.e("fbban2==>", "onAdClicked: ");
+
             }
 
             @Override
             public void onLoggingImpression(Ad ad) {
-                Log.e("fbban2==>", "onLoggingImpression: ");
+
             }
         };
-
-        bannerAdContainer.loadAd(
-                bannerAdContainer.buildLoadAdConfig()
-                        .withAdListener(nativeAdListener)
-                        .build());
-    }
-
-    private void showfbbanner1() {
-        Log.e(TAG, "fbban2 " + getString(R.string.fbbanner));
-        FrameLayout adViewContainer = findViewById(R.id.fl_b1);
-        bannerAdContainer = new com.facebook.ads.AdView(this, getString(R.string.fbbanner), com.facebook.ads.AdSize.BANNER_HEIGHT_90);
-        adViewContainer.addView(bannerAdContainer);
-        NativeAdListener nativeAdListener = new NativeAdListener() {
-            @Override
-            public void onMediaDownloaded(Ad ad) {
-            }
-
-            @Override
-            public void onError(Ad ad, AdError adError) {
-                Log.e("fbban2==>", adError.getErrorMessage());
-
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-                Log.e("fbban2==>", "onAdLoaded: ");
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-                Log.e("fbban2==>", "onAdClicked: ");
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-                Log.e("fbban2==>", "onLoggingImpression: ");
-            }
-        };
-
-        bannerAdContainer.loadAd(
-                bannerAdContainer.buildLoadAdConfig()
+        nativeBannerAd.loadAd(
+                nativeBannerAd.buildLoadAdConfig()
                         .withAdListener(nativeAdListener)
                         .build());
     }
